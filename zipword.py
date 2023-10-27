@@ -1,0 +1,44 @@
+import zipfile
+import time
+
+folderpath=input('path to the file:')
+zipf=zipfile.ZipFile(folderpath)
+global result
+result=0
+global tried
+tried=0
+c=0
+
+if not zipf:
+    print("The zipped file/folder is not password protected!you can successfully open it")
+else:
+    starttime=time.time()
+    wordListFile = open('wordlist.txt', 'r',errors='ignore')
+    body = wordListFile.read().lower()
+    words = body.split('\n')
+
+    for i in range(len(words)):
+        word = words[i]
+        password=word.encode('utf-8').strip()
+        c=c+1
+        print('Trying to decode passowrd by: {}'.format(word))
+        try:
+            with zipfile.ZipFile(folderpath,'r')as zf:
+                zf.extractall(pwd=password)
+                print("Success The Password is:"+word)
+                endtime=time.time()
+                result=1
+                break
+        except:
+            pass
+        if(result==0):
+            endtime=time.time()
+            duration= endtime-starttime
+            print("Sorry,password not found.A total of"+str(c)+"possible combinations tried in"+str(duration)+"seconds.password is not of 4 characters")
+        else:
+            endtime=time.time()
+            duration= endtime-starttime
+            print('Congratulations!!!! Password found after trying"+str(c)+"combinations'+str(duration)+'seconds')
+
+
+
